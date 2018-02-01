@@ -20,9 +20,9 @@ app.set('view engine', 'handlebars');
 
 //Imports bodyParser
 var bodyParser = require('body-parser');
-// parse application/x-www-form-urlencoded
+// Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-// parse application/json
+// Parse application/json
 app.use(bodyParser.json());
 
 //Sets port to 3000
@@ -32,13 +32,42 @@ app.set('port', process.env.PORT || 3000);
 //EX: can now just do /img/xxx or /css/ccc and take directly from public folder
 app.use(express.static(__dirname + '/public'));
 
-app.post('/resource', function(req, res){
-	var body = req.body;
-	console.log(body);
-	res.json(body);
+//Adds a number to each page accessed console log
+var consoleNum = 0;
+//Add Console Log Msgs for each page accessed
+app.use(function (req, res, next) {
+	consoleNum += 1;
+	console.log(consoleNum + "- Looking for URL : " + req.url);
+	next();
 });
 
-//edit a user route
+//ROOT, renders home.handlebars
+app.get('/', function(req, res){
+	res.render('home');
+});
+
+//Load and Parse the JSON 'Databases' and assign them to a variable
+var usersJSON = fs.readFileSync('./users.json','utf8');
+usersJSON = JSON.parse(usersJSON);
+
+//Users page should display a JSON database
+app.get('/users', function(req, res){
+	console.log ("You accessed a(n) " + typeof usersJSON + " type");
+	res.send(usersJSON);
+});
+
+// Control page
+app.get('/users/control', function(req, res){
+	res.render('control');
+});
+
+//#1 - GET aka get
+app.get('/users', function(req, res){
+	console.log ("GET: You accessed a(n) " + typeof usersJSON + " type");
+	res.send(usersJSON);
+});
+
+/*//edit a user route
 app.put('/update/:id/:firstname/:lastname', editUser);
 //update user information
 function editUser(req, res){
@@ -66,54 +95,8 @@ function editUser(req, res){
 		}
 	res.send(reply);
 }
-/* Conventional Design
-• POST /user/add?username=weicai
-• GET /user/remove?username=weicai
-• POST /user/update?username=weicai
-• GET /user/get?username=weicai
 
-RESTful Design
-• POST /user/weicai
-• DELETE /user/weicai
-• PUT /user/weicai
-• GET /user/weicai */
-
-//Adds a number to each page accessed console log
-var consoleNum = 0;
-//Add Console Log Msgs for each page accessed
-app.use(function (req, res, next) {
-	consoleNum += 1;
-	console.log(consoleNum + "- Looking for URL : " + req.url);
-	next();
-});
-
-//ROOT, renders home.handlebars
-app.get('/', function(req, res){
-	res.render('home');
-});
-
-//Load and Parse the JSON 'Databases' and assign them to a variable
-var usersJSON = fs.readFileSync('./users.json','utf8');
-usersJSON = JSON.parse(usersJSON);
-
-//Users page should display a JSON database
-app.get('/users', function(req, res){
-	console.log ("You accessed a(n) " + typeof usersJSON + " type");
-	res.send(usersJSON);
-});
-
-app.get('/users/control', function(req, res){
-	res.render('control');
-});
-
-//#1 - GET aka get
-app.get('/users', function(req, res){
-	console.log ("GET: You accessed a(n) " + typeof usersJSON + " type");
-	res.send(usersJSON);
-});
-
-
-/*add a user route
+//add a user route
 app.get('/add/:id/:firstname/:lastname', addUser);
 //add a user to the json
 function addUser(req, res){
@@ -146,46 +129,39 @@ function addUser(req, res){
 	res.send(reply);
 }
 */
-/*
-//#1 - POST aka create
-app.post('/users', function(req, res){
-	console.log ("POST: You accessed a(n) " + typeof usersJSON + " type");
-	res.send(usersJSON);
-});
 
 //#1 - PUT aka update
 app.put('/users', function(req, res){
-	console.log ("PUT: You accessed a(n) " + typeof usersJSON + " type");
-	res.send(usersJSON);
+	var body = req.body;
+	console.log(body);
+	res.json(body);
 });
 
 //#1 - DELETE aka remove/delete
 app.delete('/users/:id', function(req, res){
 	console.log ("DELETE: You accessed a(n) " + typeof usersJSON + " type");
 	res.send(usersJSON);
-});*/
-
-//URL parameters example
-app.get('/name/:username', function(req, res){
-	res.json({name:req.params.username});
-	});
-app.get('/name/:firstname/:lastname', function(req, res){
-	res.json({firstname:req.params.firstname, lastname:req.params.lastname});
 });
 
-
+// #1 - POST aka create
 // Update json using the form from /users/control
 app.post('/users/submit', function(req, res){
-	
-	var body = req.body;
-	console.log(body);
-	usersJSON['theUsers'].push(body);
+	var newBody = req.body;
+	var newid = Number(newBody.id);
+	usersJSON['theUsers'].push(newBody); //https://stackoverflow.com/questions/18884840/adding-a-new-array-element-to-a-json-object
 	JSONstr = JSON.stringify(usersJSON, null, 2);
+	/*if(users[id]){
+		var reply = {
+			msg: "ID already exists."
+		}
+	}else{
+	users[id] = firstname + " " + lastname;*/
 
+	newBody = JSON.stringify(usersJSON, null, 2);
 	fs.writeFile('./users.json', JSONstr, function (err) {
 		if (err) throw err;
 		console.log('Updated!');
-		res.send("Your user with id of " + JSONstr + " has been added!");
+		res.send("Your user with id of " + newBody + " has been added!");
 	});
 });
 
@@ -198,6 +174,11 @@ app.get('/users/:id', function(req, res){
 app.get('/realtime/data', function(req, res){
 	rNum = Math.floor((Math.random() * 999) + 1);
 	res.json({"data": rNum });
+});
+
+//REALTIME SHOW
+app.get('/realtime/show', function(req, res){
+	res.render('realtime');
 });
 
 //Function to let app know which port to listen to
