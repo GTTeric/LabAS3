@@ -165,11 +165,6 @@ app.delete('/users/:id', function(req, res){
 	res.send(usersJSON);
 });*/
 
-app.get('/users/:id', function(req, res){
-	var reqData = req.params;
-	res.send("The ID you entered is " + reqData.id + "!");
-});
-
 //URL parameters example
 app.get('/name/:username', function(req, res){
 	res.json({name:req.params.username});
@@ -181,25 +176,22 @@ app.get('/name/:firstname/:lastname', function(req, res){
 
 // Update json using the form from /users/control
 app.post('/users/submit', function(req, res){
-	var newid = req.body.id;
-	newid2 = JSON.stringify(newid, null, 2);
-	newid2 = "\"id\":" + newid2 + "\n";
-	var newFname = req.body.fname;
-	newFname2 = JSON.stringify(newFname, null, 2);
-	newFname2 = "\"firstname\":" + newFname2 + "\n";
-	var newLname = req.body.lname;
-	newLname2 = JSON.stringify(newLname, null, 2);
-	newLname2 = "\"lastname\":" + newLname2 + "\n";
 	
-	/*
-	fs.writeFile('./users.json', newid2, function (err) {
+	var body = req.body;
+	console.log(body);
+	usersJSON['theUsers'].push(body);
+	JSONstr = JSON.stringify(usersJSON, null, 2);
+
+	fs.writeFile('./users.json', JSONstr, function (err) {
 		if (err) throw err;
 		console.log('Updated!');
-		res.send("Your user with id of " + id + " has been added!");
+		res.send("Your user with id of " + JSONstr + " has been added!");
 	});
-	*/
-	console.log("post received: %s %s" + newid2 + newFname2 + newLname2);
-	res.send("Your user with id of " + newid2 + newFname2 + newLname2 + " has been added!");
+});
+
+app.get('/users/:id', function(req, res){
+	var reqData = req.params;
+	res.send("The ID you entered is " + reqData.id + "!");
 });
 
 //RANDOM DATA for REALTIME DATA --DONE--
