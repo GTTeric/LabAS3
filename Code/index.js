@@ -1,23 +1,20 @@
 //Start server by typing node index.js in the cmd prompt
 //Open browser and navigate to localhost:3000 to launch site
 
-
-
 //Import the express module
 var express = require('express');
 var app = express();
+//Imports File System module which comes pre-installed with Express
+var fs = require('fs');
 
 //Block header from containing info about the server
 app.disable('x-powered-by');
 
-//Imports and sets up handlebars module
+//Imports and sets up Handlebars module, named for its use of curly brackets {{}}
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-
-//Imports File System module
-var fs = require('file-system');
 
 //Imports bodyParser
 var bodyParser = require('body-parser');
@@ -42,7 +39,7 @@ RESTful Design
 • PUT /user/weicai
 • GET /user/weicai */
 
-//Adds a number to each page accessed
+//Adds a number to each page accessed console log
 var consoleNum = 0;
 //Add Console Log Msgs for each page accessed
 app.use(function (req, res, next) {
@@ -56,12 +53,16 @@ app.get('/', function(req, res){
 	res.render('home');
 });
 
+//Load and Parse the JSON 'Databases' and assign them to a variable
+var usersJSON = fs.readFileSync('./users.json','utf8');
+usersJSON = JSON.parse(usersJSON);
+var randomJSON = fs.readFileSync('./randomData.json','utf8');
+randomJSON = JSON.parse(randomJSON);
+
 //Users page should display a JSON database
 app.get('/users', function(req, res){
-	var text = fs.readFileSync('./users.json','utf8');
-	text = JSON.parse(text);
-	console.log ("You accessed a(n) " + typeof text + " type");
-	res.send(text);
+	console.log ("You accessed a(n) " + typeof usersJSON + " type");
+	res.send(usersJSON);
 });
 
 app.get('/users/control', function(req, res){
@@ -75,13 +76,11 @@ app.get('/users/:id', function(req, res){
 
 //RANDOM DATA for REALTIME DATA
 app.get('/realtime/show', function(req, res){
-	var text = fs.readFileSync('./randomData.json','utf8');
-	text = JSON.parse(text);
-	console.log ("You accessed a(n) " + typeof text + " type");
-	res.send(text);
+	console.log ("You accessed a(n) " + typeof randomJSON + " type");
+	res.send(randomJSON);
 });
 
 //Function to let app know which port to listen to
 app.listen(app.get('port'), function(){
-	console.log("Express started on http://localhost:" + app.get('port') + " press Ctrl-C to terminate");
+	console.log("0- Express started on http://localhost:" + app.get('port') + " press Ctrl-C to terminate");
 });
