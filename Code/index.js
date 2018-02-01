@@ -20,6 +20,9 @@ app.set('view engine', 'handlebars');
 
 //Imports bodyParser
 var bodyParser = require('body-parser');
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
 app.use(bodyParser.json());
 
 //Sets port to 3000
@@ -29,6 +32,40 @@ app.set('port', process.env.PORT || 3000);
 //EX: can now just do /img/xxx or /css/ccc and take directly from public folder
 app.use(express.static(__dirname + '/public'));
 
+app.post('/resource', function(req, res){
+	var body = req.body;
+	console.log(body);
+	res.json(body);
+});
+
+//edit a user route
+app.put('/update/:id/:firstname/:lastname', editUser);
+//update user information
+function editUser(req, res){
+	var userEdit = req.params;
+	var id = Number(userEdit.id);
+	var firstname = userEdit.firstname;
+	var lastname = userEdit.lastname;
+	
+	if(users[id]){
+			var reply = {
+				msg: "Updating user"
+			}
+				users[id] = firstname + " " + lastname;
+			//write information to the file
+			var data = JSON.stringify(users);
+			fs.writeFile('users.json', data, finished);
+			function finished(err){
+				console.log('all set.');
+			}
+		}else{
+			//reply written as an object
+			var reply = {
+				msg: "User does not exist."
+			}	
+		}
+	res.send(reply);
+}
 /* Conventional Design
 • POST /user/add?username=weicai
 • GET /user/remove?username=weicai
@@ -58,8 +95,6 @@ app.get('/', function(req, res){
 //Load and Parse the JSON 'Databases' and assign them to a variable
 var usersJSON = fs.readFileSync('./users.json','utf8');
 usersJSON = JSON.parse(usersJSON);
-var randomJSON = fs.readFileSync('./randomData.json','utf8');
-randomJSON = JSON.parse(randomJSON);
 
 //Users page should display a JSON database
 app.get('/users', function(req, res){
@@ -77,6 +112,41 @@ app.get('/users', function(req, res){
 	res.send(usersJSON);
 });
 
+
+/*add a user route
+app.get('/add/:id/:firstname/:lastname', addUser);
+//add a user to the json
+function addUser(req, res){
+	var userAdd = req.params;
+	var id = Number(userAdd.id)
+	var firstname = userAdd.firstname;
+	var lastname = userAdd.lastname;
+	
+	if(users[id]){
+		var reply = {
+			msg: "ID already exists."
+		}
+	}else{
+	users[id] = firstname + " " + lastname;
+
+	//write information to the file
+		var data = JSON.stringify(users);
+		fs.writeFile('users.json', data, finished);
+		function finished(err){
+			console.log('all set.');
+		}
+		
+	//reply written as an object
+	var reply = {
+		
+		msg: "User has been added."
+		
+	}
+	}
+	res.send(reply);
+}
+*/
+/*
 //#1 - POST aka create
 app.post('/users', function(req, res){
 	console.log ("POST: You accessed a(n) " + typeof usersJSON + " type");
@@ -93,26 +163,6 @@ app.put('/users', function(req, res){
 app.delete('/users/:id', function(req, res){
 	console.log ("DELETE: You accessed a(n) " + typeof usersJSON + " type");
 	res.send(usersJSON);
-});
-
-/*
-// Update json using the form from /users/control
-app.post('/users/submit', function(req, res){
-	var newid = req.param.id;
-	newid2 = JSON.stringify(newid);
-	var newFname = req.params.fname;
-	newFname2 = JSON.stringify(newFname);
-	var newLname = req.body.lname;
-	newLname2 = JSON.stringify(newLname);
-	newData = JSON.stringify(newData);
-	
-	fs.appendFile('./users.json', newData, function (err) {
-		if (err) throw err;
-		console.log('Updated!');
-		res.send("Your user with id of " + id + " has been added!");
-	  });
-	  
-	console.log("post received: %s %s" + newid2 + newFname2 + newLname2);
 });*/
 
 app.get('/users/:id', function(req, res){
@@ -120,10 +170,42 @@ app.get('/users/:id', function(req, res){
 	res.send("The ID you entered is " + reqData.id + "!");
 });
 
-//RANDOM DATA for REALTIME DATA
-app.get('/realtime/show', function(req, res){
-	console.log ("You accessed a(n) " + typeof randomJSON + " type");
-	res.send(randomJSON);
+//URL parameters example
+app.get('/name/:username', function(req, res){
+	res.json({name:req.params.username});
+	});
+app.get('/name/:firstname/:lastname', function(req, res){
+	res.json({firstname:req.params.firstname, lastname:req.params.lastname});
+});
+
+
+// Update json using the form from /users/control
+app.post('/users/submit', function(req, res){
+	var newid = req.body.id;
+	newid2 = JSON.stringify(newid, null, 2);
+	newid2 = "\"id\":" + newid2 + "\n";
+	var newFname = req.body.fname;
+	newFname2 = JSON.stringify(newFname, null, 2);
+	newFname2 = "\"firstname\":" + newFname2 + "\n";
+	var newLname = req.body.lname;
+	newLname2 = JSON.stringify(newLname, null, 2);
+	newLname2 = "\"lastname\":" + newLname2 + "\n";
+	
+	/*
+	fs.writeFile('./users.json', newid2, function (err) {
+		if (err) throw err;
+		console.log('Updated!');
+		res.send("Your user with id of " + id + " has been added!");
+	});
+	*/
+	console.log("post received: %s %s" + newid2 + newFname2 + newLname2);
+	res.send("Your user with id of " + newid2 + newFname2 + newLname2 + " has been added!");
+});
+
+//RANDOM DATA for REALTIME DATA --DONE--
+app.get('/realtime/data', function(req, res){
+	rNum = Math.floor((Math.random() * 999) + 1);
+	res.json({"data": rNum });
 });
 
 //Function to let app know which port to listen to
