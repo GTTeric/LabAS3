@@ -1,5 +1,12 @@
-{
-    "id": 777,
-    "firstname": "Wei",
-    "lastname": "Cai"
-}
+[
+    {
+        "id": 222,
+        "firstname": "Ben",
+        "lastname": "Affleck"
+    },
+    {
+        "id": 777,
+        "firstname": "Wei",
+        "lastname": "Cai"
+    }
+]

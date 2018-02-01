@@ -1,18 +1,17 @@
-RESTful API Lab Assignment 3: Combining Express, Handlebars, Node.js, jQuery, AJAX and more to make a small sample project where users can interact with a user database.
+RESTful API Lab Assignment 3:
 =======
 
-Sub-heading
+INFO 4235 - KPU
 -----------
 
-### Another deeper heading
+### Concepts and Languages:
 
-Markdown is plain text formatting designed to convert
-to HTML
+Combining Express, Handlebars, Node.js, jQuery, AJAX and more to make a small sample project where users can interact with a user database.
 
 Paragraphs are separated
 by a blank line.
 
-Leave 2 spaces at the end of a line to do a
+Leave 2 spaces at the end of a line to do a  
 line break
 
 Text attributes *italic*, **bold**,

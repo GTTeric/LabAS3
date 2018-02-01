@@ -3,6 +3,8 @@
 
 //Import the express module
 var express = require('express');
+var router = express.Router();
+
 var app = express();
 //Imports File System module which comes pre-installed with Express
 var fs = require('fs');
@@ -68,6 +70,50 @@ app.get('/users', function(req, res){
 app.get('/users/control', function(req, res){
 	res.render('control');
 });
+
+//#1 - GET aka get
+app.get('/users', function(req, res){
+	console.log ("GET: You accessed a(n) " + typeof usersJSON + " type");
+	res.send(usersJSON);
+});
+
+//#1 - POST aka create
+app.post('/users', function(req, res){
+	console.log ("POST: You accessed a(n) " + typeof usersJSON + " type");
+	res.send(usersJSON);
+});
+
+//#1 - PUT aka update
+app.put('/users', function(req, res){
+	console.log ("PUT: You accessed a(n) " + typeof usersJSON + " type");
+	res.send(usersJSON);
+});
+
+//#1 - DELETE aka remove/delete
+app.delete('/users/:id', function(req, res){
+	console.log ("DELETE: You accessed a(n) " + typeof usersJSON + " type");
+	res.send(usersJSON);
+});
+
+/*
+// Update json using the form from /users/control
+app.post('/users/submit', function(req, res){
+	var newid = req.param.id;
+	newid2 = JSON.stringify(newid);
+	var newFname = req.params.fname;
+	newFname2 = JSON.stringify(newFname);
+	var newLname = req.body.lname;
+	newLname2 = JSON.stringify(newLname);
+	newData = JSON.stringify(newData);
+	
+	fs.appendFile('./users.json', newData, function (err) {
+		if (err) throw err;
+		console.log('Updated!');
+		res.send("Your user with id of " + id + " has been added!");
+	  });
+	  
+	console.log("post received: %s %s" + newid2 + newFname2 + newLname2);
+});*/
 
 app.get('/users/:id', function(req, res){
 	var reqData = req.params;
