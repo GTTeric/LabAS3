@@ -67,71 +67,8 @@ app.get('/users', function(req, res){
 	res.send(usersJSON);
 });
 
-/*//edit a user route
-app.put('/update/:id/:firstname/:lastname', editUser);
-//update user information
-function editUser(req, res){
-	var userEdit = req.params;
-	var id = Number(userEdit.id);
-	var firstname = userEdit.firstname;
-	var lastname = userEdit.lastname;
-	
-	if(users[id]){
-			var reply = {
-				msg: "Updating user"
-			}
-				users[id] = firstname + " " + lastname;
-			//write information to the file
-			var data = JSON.stringify(users);
-			fs.writeFile('users.json', data, finished);
-			function finished(err){
-				console.log('all set.');
-			}
-		}else{
-			//reply written as an object
-			var reply = {
-				msg: "User does not exist."
-			}	
-		}
-	res.send(reply);
-}
-
-//add a user route
-app.get('/add/:id/:firstname/:lastname', addUser);
-//add a user to the json
-function addUser(req, res){
-	var userAdd = req.params;
-	var id = Number(userAdd.id)
-	var firstname = userAdd.firstname;
-	var lastname = userAdd.lastname;
-	
-	if(users[id]){
-		var reply = {
-			msg: "ID already exists."
-		}
-	}else{
-	users[id] = firstname + " " + lastname;
-
-	//write information to the file
-		var data = JSON.stringify(users);
-		fs.writeFile('users.json', data, finished);
-		function finished(err){
-			console.log('all set.');
-		}
-		
-	//reply written as an object
-	var reply = {
-		
-		msg: "User has been added."
-		
-	}
-	}
-	res.send(reply);
-}
-*/
-
 //#1 - PUT aka update
-app.put('/users', function(req, res){
+app.put('/users/:id', function(req, res){
 	var body = req.body;
 	console.log(body);
 	res.send("Your PUT request went through properly");
@@ -157,7 +94,7 @@ app.post('/users/submit', function(req, res){
 	}else{
 	users[id] = firstname + " " + lastname;*/
 
-	newBody = JSON.stringify(usersJSON, null, 2);
+	newBody = JSON.stringify(newBody, null, 2);
 	fs.writeFile('./users.json', JSONstr, function (err) {
 		if (err) throw err;
 		console.log('Updated!');
@@ -165,12 +102,8 @@ app.post('/users/submit', function(req, res){
 	});
 });
 
-app.get('/users/:id', function(req, res){
-	var reqData = req.params;
-	res.send("The ID you entered is " + reqData.id + "!");
-});
-
-//RANDOM DATA for REALTIME DATA --DONE--
+//#2 and #3.2
+//REALTIME DATA, generates a random number and puts it in a JSON Object
 app.get('/realtime/data', function(req, res){
 	rNum = Math.floor((Math.random() * 999) + 1);
 	res.json({"data": rNum });
@@ -181,7 +114,7 @@ app.get('/realtime/show', function(req, res){
 	res.render('realtime');
 });
 
-//Function to let app know which port to listen to
+//Function defines which port to listen to
 app.listen(app.get('port'), function(){
 	console.log("0- Express started on http://localhost:" + app.get('port') + " press Ctrl-C to terminate");
 });
