@@ -134,7 +134,7 @@ function addUser(req, res){
 app.put('/users', function(req, res){
 	var body = req.body;
 	console.log(body);
-	res.json(body);
+	res.send("Your PUT request went through properly");
 });
 
 //#1 - DELETE aka remove/delete
