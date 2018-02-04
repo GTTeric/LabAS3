@@ -1,1 +1,1 @@
-You successfully loaded this file using AJAX!
+You successfully loaded a file called 'success.txt'!

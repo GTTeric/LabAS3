@@ -1,6 +1,6 @@
 //Start server by typing node index.js in the cmd prompt
 //Open browser and navigate to localhost:3000 to launch site
-
+//-----SETUP-----
 //Import the express module
 var express = require('express');
 var router = express.Router();
@@ -32,6 +32,7 @@ app.set('port', process.env.PORT || 3000);
 //EX: can now just do /img/xxx or /css/ccc and take directly from public folder
 app.use(express.static(__dirname + '/public'));
 
+//-----ROUTES & RESTful API-----
 //Adds a number to each page accessed console log
 var consoleNum = 0;
 //Add Console Log Msgs for each page accessed
@@ -45,48 +46,77 @@ app.use(function (req, res, next) {
 app.get('/', function(req, res){
 	res.render('home');
 });
-
-//Load and Parse the JSON 'Databases' and assign them to a variable
-var usersJSON = fs.readFileSync('./users.json','utf8');
-usersJSON = JSON.parse(usersJSON);
-
-//Users page should display a JSON database
-app.get('/users', function(req, res){
-	console.log ("You accessed a(n) " + typeof usersJSON + " type");
-	res.send(usersJSON);
-});
-
-// Control page
+//Control page, renders control.handlebars
 app.get('/users/control', function(req, res){
 	res.render('control');
 });
+//REALTIME SHOW, renders realtime.handlebars
+app.get('/realtime/show', function(req, res){
+	res.render('realtime');
+});
 
-//#1 - GET aka get
+//#2 and #3.2
+//REALTIME DATA, generates a random number and puts it in a JSON Object
+app.get('/realtime/data', function(req, res){
+	rNum = Math.floor((Math.random() * 999) + 1);
+	res.json({"data": rNum });
+});
+
+//Load and Parse the JSON 'Database' and assign it to a variable
+var usersJSON = fs.readFileSync('./users.json','utf8');
+usersJSON2 = JSON.parse(usersJSON);
+
+//Users page should display a JSON database
 app.get('/users', function(req, res){
-	console.log ("GET: You accessed a(n) " + typeof usersJSON + " type");
+	console.log ("You accessed a(n) \'" + typeof usersJSON2 + "\' type called: " + "usersJSON2 via app.get/users");
 	res.send(usersJSON);
+});
+
+//Wei's Restful Snippet Examples
+app.get('/example', function(req, res){
+	// return a JSON for post
+	res.json({type : "json", value:"get"});
+});
+app.get('/example/:username', function(req, res){
+	res.json({name:req.params.username});
+});
+app.get('/example/:firstname/:lastname', function(req, res){
+	res.json({firstname:req.params.firstname, lastname:req.params.lastname});
+});
+app.post('/example', function(req, res){
+	// return a JSON for post
+	res.json({type : "json", value:"post"});
+});
+app.put('/example', function(req, res){
+	// return a JSON for post
+	res.json({type : "json", value:"put"});
+});
+app.delete('/example', function(req, res){
+	// return a JSON for post
+	res.json({type : "json", value:"delete"});
 });
 
 //#1 - PUT aka update
-app.put('/users/:id', function(req, res){
+app.put('/users', function(req, res){
 	var body = req.body;
-	console.log(body);
+	console.log ("You accessed a(n) \'" + typeof usersJSON2 + "\' type called: " + "usersJSON2 via app.put/users. Your request was: " + body);
+	//insert PUT code...
 	res.send("Your PUT request went through properly");
 });
-
 //#1 - DELETE aka remove/delete
-app.delete('/users/:id', function(req, res){
-	console.log ("DELETE: You accessed a(n) " + typeof usersJSON + " type");
-	res.send(usersJSON);
+app.delete('/users', function(req, res){
+	var body = req.body;
+	console.log ("You accessed a(n) \'" + typeof usersJSON2 + "\' type called: " + "usersJSON2 via app.delete/users. Your request was: " + body);
+	//insert delete code...
+	res.send("Your DELETE request went through properly");
 });
-
 // #1 - POST aka create
 // Update json using the form from /users/control
-app.post('/users/submit', function(req, res){
+app.post('/users', function(req, res){
 	var newBody = req.body;
 	var newid = Number(newBody.id);
-	usersJSON['theUsers'].push(newBody); //https://stackoverflow.com/questions/18884840/adding-a-new-array-element-to-a-json-object
-	JSONstr = JSON.stringify(usersJSON, null, 2);
+	usersJSON2['theUsers'].push(newBody); //https://stackoverflow.com/questions/18884840/adding-a-new-array-element-to-a-json-object
+	JSONstr = JSON.stringify(usersJSON2, null, 2);
 	/*if(users[id]){
 		var reply = {
 			msg: "ID already exists."
@@ -97,21 +127,9 @@ app.post('/users/submit', function(req, res){
 	newBody = JSON.stringify(newBody, null, 2);
 	fs.writeFile('./users.json', JSONstr, function (err) {
 		if (err) throw err;
-		console.log('Updated!');
-		res.send("Your user with id of " + newBody + " has been added!");
+		console.log ("Successfully POSTed via app.post/users. Your request contained the following: " + newBody);
+		res.send("Your user with id of " + newBody + " has been added via POST!");
 	});
-});
-
-//#2 and #3.2
-//REALTIME DATA, generates a random number and puts it in a JSON Object
-app.get('/realtime/data', function(req, res){
-	rNum = Math.floor((Math.random() * 999) + 1);
-	res.json({"data": rNum });
-});
-
-//REALTIME SHOW
-app.get('/realtime/show', function(req, res){
-	res.render('realtime');
 });
 
 //Function defines which port to listen to

@@ -12,89 +12,14 @@
     },
     {
       "id": "111",
-      "fname": "Eric",
-      "lname": "Fantillo"
+      "firstname": "Eric",
+      "lastname": "Fantillo"
     },
-    {
-      "id": "4543",
-      "fname": "asd",
-      "lname": "asda"
-    },
-    {
-      "id": "000",
-      "fname": "Test",
-      "lname": "Last"
-    },
+    {},
     {
       "id": "123",
-      "fname": "One",
-      "lname": "Two"
-    },
-    {
-      "id": "123",
-      "fname": "One",
-      "lname": "Two"
-    },
-    {
-      "id": "234",
-      "fname": "Two",
-      "lname": "Four"
-    },
-    {
-      "id": "111",
-      "fname": "Eric",
-      "lname": "Fantillo"
-    },
-    {
-      "id": "555",
-      "fname": "Nico",
-      "lname": "Santarin"
-    },
-    {
-      "id": "345",
-      "firstname": "Em",
-      "lastname": "Ber"
-    },
-    {
-      "id": "222",
-      "firstname": "Ben",
-      "lastname": "Affleck"
-    },
-    {
-      "id": "12",
-      "firstname": "Evraj",
-      "lastname": "Ber"
-    },
-    {
-      "id": "567",
-      "firstname": "Evraj",
-      "lastname": "2"
-    },
-    {
-      "id": "14213",
-      "firstname": "14221",
-      "lastname": "14123",
-      "postbtn": ""
-    },
-    {
-      "id": "123213",
-      "firstname": "654",
-      "lastname": "64"
-    },
-    {
-      "id": "563",
-      "firstname": "34534",
-      "lastname": "34534"
-    },
-    {
-      "id": "563",
-      "firstname": "34534",
-      "lastname": "34534"
-    },
-    {
-      "id": "123213",
-      "firstname": "12321",
-      "lastname": "123123"
+      "firstname": "123",
+      "lastname": "123"
     }
   ]
 }

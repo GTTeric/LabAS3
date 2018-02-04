@@ -4,8 +4,8 @@
 </div>
 
 <script>
-ajaxCall(); //call method ASAP to load initial #
-setInterval(ajaxCall, 5000); //Then calls the method every 5000 MS == 5 secs
+ajaxCall(); //call ASAP to load initial #
+setInterval(ajaxCall, 5000); //Then calls every 5000 MS == 5 secs
 function ajaxCall() {
     //getJSON - https://www.w3schools.com/jquery/ajax_getjson.asp 
     $(document).ready(function(){
@@ -18,6 +18,6 @@ function ajaxCall() {
     });
 }
 </script>
-<div id="rtdata"><h4>The current random number is: </h4>
+<div id="rtdata"><h4>The current random number is:</h4>
 <h1 id="rtdata2"></h1>
 </div>

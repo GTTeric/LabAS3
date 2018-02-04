@@ -1,9 +1,9 @@
 <div class="page-header">
 <h3>User Control Page!</h3>
-<p>Below is the user interface for you to use LabAS3's RESTful API to create a user.</p>
+<p>Below is the user interface to use LabAS3's RESTful API to create a user with JQuery/AJAX.</p>
 </div>
 
-<form style="border:1px solid #ccc">
+<form id="reqForm" style="border:1px solid #ccc">
   <div class="container">
     <h3>Create User</h3>
     <p>Please fill in this form to create a user.</p>
@@ -21,48 +21,53 @@
     <p>By creating a user you agree to adhere to our <a href="#" style="color:dodgerblue">Terms & Privacy Policy</a>.</p>
 
     <div class="btn-group">
-      <button type="button" class="btn btn-primary" id="btnOne">Create User (POST)</button>
-      <button type="button" class="btn btn-info">Update User aka (PUT)</button>
-      <button type="button" class="btn btn-primary">Delete User</button>
-      <button type="button" class="btn btn-info">Cancel</button>
+      <button type="button" class="btn btn-primary" id="createbtn">Create User (POST)</button>
+      <button type="button" class="btn btn-info" id="updatebtn">Update User (PUT)</button>
+      <button type="button" class="btn btn-primary" id="deletebtn">Delete User</button>
+      <button type="button" class="btn btn-info" id="Cancel">Cancel</button>
     </div>
-    <br>
   </div>
 </form>
 
 <script>
-$(document).ready(function(){
-    $(document).ajaxSuccess(function(){ //#2
-        alert("AJAX request successfully completed");
-    });
-    $("#btnOne").click(function(){ //starts the above #1
-        $("#test").load("../success.txt"); //#3
-    });
+//NOTE: jQuery == $ so for example, jQuery.ajax() == $.ajax()
+//Clears Form (https://stackoverflow.com/questions/20062218/how-do-i-clear-a-search-box-with-an-x-in-bootstrap-3)
+$("#Cancel").click(function(){
+  $("input").val('');
 });
-</script>
-<div id="test"></div>
 
-<script>
+//Defines which request type for whichever button is clicked, then calls the reqData function
+var reqType = 'GET';
 $(document).ready(function() {
-  $("#advance").click(function() {
-    fetchData();
+  $("#createbtn").click(function() {
+    reqType = 'POST';
+    reqData();
+  });
+  $("#updatebtn").click(function() {
+    reqType = 'PUT';
+    reqData();
+  });
+  $("#deletebtn").click(function() {
+    reqType = 'DELETE';
+    reqData();
   });
 });
-function fetchData() {
+
+//Credit for finding serialize https://www.shawnhooper.ca/2017/02/09/submit-all-fields-by-ajax/
+function reqData() {
   $.ajax({
-    url: "../users.json",
-    type: "POST",
-    contentType: 'application/json',
-    data: JSON.stringify({name: "Test name"}),
-    success: function(result) {
-      $("#result").load("../success.txt");
-    }
-  });
+      url     : '/users', //sends request to this URL which gets handled in index.js file
+      type    : reqType, //changes depending on which button is clicked, see above function
+      data    : $("#reqForm").serialize() //http://api.jquery.com/serialize/ reduces lines of code needed by using built-in jQuery function
+    })
+    .done(function() {
+      alert("AJAX " + reqType + " request successfully completed!");
+    })
+    .fail(function(xhr, status, error) {
+      alert("AJAX " + reqType + " request failed!");
+    });
 }
 </script>
-<button id="advance">Advance</button>
-<div id="result"></div>
-
 
 <!--  BS 4.0 form
 <div class="container">
